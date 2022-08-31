@@ -1,20 +1,33 @@
 import { Schema, model, models } from 'mongoose';
-
+import constants from '../constants';
 const productSchema = new Schema({
   name: {
     type: String, required:true
   },
   price: {
-    type: String, required: true
+    type:Number,
+    required: true
   },
-  image: {
+  currency:{
+    type:String,
+    enum:constants.currency,
+    default:constants.currency[0]
+  },
+  image_url: {
     type: String, default:""
   },
-  quantity:{
-    type: String, required: true
+  image_path: {
+    type: String, default:""
+  },
+  size:{
+    type: String,
+    enum:constants.sizes,
+    required: true
   },
   category: {
-    type: String, required: true
+    type: Schema.Types.ObjectId,
+    ref:'categories',
+    required: true
   },
   description: {
     type: String, default:""

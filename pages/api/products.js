@@ -1,8 +1,7 @@
 import connect from '../../middlewares/connect';
-import validate from '../../middlewares/validate';
+import authorize from '../../middlewares/authorize';
 import nextConnect from 'next-connect';
-import { register } from '../../helpers/user';
-import { registrationSchema } from '../../interfaces/user';
+import { getAll } from '../../helpers/product';
 
 const api = nextConnect({
   onError(error, req, res) {
@@ -13,11 +12,10 @@ const api = nextConnect({
   }
 });
 api.use(connect);
-api.use(validate(registrationSchema));
-api.post(controller);
+api.get(controller);
 async function controller(req, res) {
   try {
-    const { status, message, data } = await register(req);
+    const { status, message, data } = await getAll(req);
     return res.status(status).json({ message, data });
   } catch (error) {
     return res.status(500).json({ message: error.message });

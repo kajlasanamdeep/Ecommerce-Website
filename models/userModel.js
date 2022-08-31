@@ -1,4 +1,5 @@
 import { Schema, model, models } from 'mongoose';
+import constants from '../constants';
 
 const userSchema = new Schema({
   firstName: {
@@ -15,8 +16,8 @@ const userSchema = new Schema({
   },
   userType: {
     type: String,
-    enum: ['USER', 'ADMIN'],
-    default: 'USER'
+    enum: constants.users,
+    default: constants.users[0]
   },
   isDeleted: {
     type: Boolean,

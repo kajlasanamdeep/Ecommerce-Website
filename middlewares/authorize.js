@@ -10,11 +10,11 @@ export default function authorize(userType) {
           [, accessToken] = accessToken.split(' ');
         };
         const session = Jwt.Verify(accessToken);
-        let user = await userModel.findById(session._id);
+        let user = await userModel.findById(session._id, { password: 0 });
         if (!user || user.userType !== userType) {
           return res.status(403).json({ message: "USER_NOT_ALLOWDED_TO_ACCESS_THIS_PAGE!" });
         }
-        req.user = user
+        req.user = user;
         return next();
       } catch (error) {
         return res.status(403).json({ message: `AUTHORIZATION_ERROR -> ${error.message.toUpperCase()}` });

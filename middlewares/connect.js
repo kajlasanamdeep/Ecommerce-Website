@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 export default async function connect(req, res, next) {
     try {
         if (mongoose.connection.readyState != 1) {
-            await mongoose.connect("mongodb://127.0.0.1:27017/mongoose_nextjs");
+            await mongoose.connect("mongodb+srv://root:root@cluster0.aq5mvxg.mongodb.net/mongoose_nextjs?retryWrites=true&w=majority");
             console.log('Database Connected Successfully!')
         }
         return next();

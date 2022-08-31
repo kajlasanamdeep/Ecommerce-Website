@@ -19,12 +19,12 @@ const register = async function (req) {
 
         payload.password = hashSync(payload.password, 10);
         let user = await userModel.create(payload);
-
+        let accessToken = Jwt.Sign(user);
         return {
             status: 201,
             message: "USER_REGISTER_SUCCESSFULLY",
             data: {
-                userType: user.userType
+                accessToken
             }
         };
 
@@ -44,19 +44,19 @@ const login = async function (req) {
             isDeleted: false
         });
 
-        if (!user){
+        if (!user) {
             return {
                 status: 404,
                 message: "USER_NOT_FOUND"
             };
         }
-        if (user.isBlocked){
+        if (user.isBlocked) {
             return {
                 status: 403,
                 message: "USER_IS_BLOCKED"
             };
         }
-        
+
         let isCorrect = compareSync(payload.password, user.password);
 
         if (!isCorrect) {
@@ -70,8 +70,7 @@ const login = async function (req) {
             status: 200,
             message: "USER_LOGGED_SUCCESSFULLY",
             data: {
-                accessToken,
-                userType: user.userType
+                accessToken
             }
         };
 
@@ -82,4 +81,54 @@ const login = async function (req) {
     }
 };
 
-export { register, login };
+const profile = async function (req) {
+    try {
+
+        let user = req.user;
+
+        return {
+            status: 201,
+            message: "USER_PROFILE_LOADED_SUCCESSFULLY",
+            data: {
+                user: user
+            }
+        };
+
+    } catch (error) {
+
+        throw error;
+
+    }
+};
+
+const update = async function (req) {
+    try {
+
+        let payload = req.body;
+        if (payload.password) {
+            payload.password = hashSync(payload.password, 10);
+        }
+        let user = await userModel.findByIdAndUpdate(req.user._id, payload, {
+            new: true, 
+            projection: {
+                password: 0
+            }
+        });
+
+        return {
+            status: 201,
+            message: "USER_UPDATED_SUCCESSFULLY",
+            data: {
+                user: user
+            }
+        };
+
+    } catch (error) {
+
+        throw error;
+
+    }
+};
+
+
+export { register, login, update, profile };

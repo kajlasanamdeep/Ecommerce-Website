@@ -1,30 +1,31 @@
 import mongoose from "mongoose";
-import categoryModel from "../models/categoryModel";
+import offerModel from "../models/offerModel";
 import productModel from "../models/productModel";
 
 const create = async function (req) {
     try {
 
         let payload = req.body;
-        let category = await categoryModel.findById(mongoose.Types.ObjectId(payload.category));
-        if(!category || category.isDeleted){
+        let product = await productModel.findById(mongoose.Types.ObjectId(payload.product));
+        if(!product || product.isDeleted){
             if (req.file) {
                 fs.unlinkSync(req.file.path);
             }    
             return{
                 status: 404,
-                message: "CATEGORY_NOT_FOUND"    
+                message: "PRODUCT_NOT_FOUND"    
             }
         }
+
         if (req?.file) {
             payload.image_url = `/images/${req.file.filename}`;
             payload.image_path = req.file.path;
         }
-        await productModel.create(payload);
+        await offerModel.create(payload);
 
         return {
             status: 201,
-            message: "PRODUCT_CREATED_SUCCESSFULLY"
+            message: "OFFER_CREATED_SUCCESSFULLY"
         };
 
     } catch (error) {
@@ -39,52 +40,48 @@ const create = async function (req) {
 const getAll = async function (req) {
     try {
         let payload = req.query;
-        let query = { isDeleted: false };
-        if (payload?.category) {
-            query.category = payload.category;
-        }
-        if (payload?.size) {
-            query.size = payload.size;
-        }
-        if (payload?.price) {
-            query.price = { $lte: parseInt(payload.price) };
+        let query = { isDeleted: false,isActive:true };
+        if (payload?.discount) {
+            query.discount = { $gte: parseInt(payload.discount) };;
         }
 
-        let products = await productModel.aggregate([
+        let offers = await offerModel.aggregate([
             {
                 $match: query
             },
             {
                 $lookup: {
-                    from: 'categories',
-                    localField: 'category',
+                    from: 'products',
+                    localField: 'product',
                     foreignField: '_id',
-                    as: 'category'
+                    as: 'product'
                 }
             },
             {
-                $unwind: "$category"
+                $unwind: "$product"
             },
             {
                 $project: {
                     _id: 1,
-                    name: 1,
-                    price: 1,
-                    currency: 1,
-                    category: "$category.name",
+                    title: 1,
+                    original_price:{$multiply:['$product.price','$quantity']},
+                    discount: 1,
+                    offer_price:{$subtract:[{$multiply:['$product.price','$quantity']},{$divide:[{$multiply:[{$multiply:['$product.price','$quantity']},"$discount"]},100]}]},
+                    product_name: "$product.name",
+                    currency:"$product.currency",
                     image_url: 1,
-                    size: 1,
+                    product_size: "$product.size",
                     description: 1,
-                    isAvaliable: 1
+                    quantity: 1
                 }
             }
         ]);
 
         return {
             status: 200,
-            message: "PRODUCTS_LISTED_SUCCESSFULLY",
+            message: "OFFERS_LISTED_SUCCESSFULLY",
             data: {
-                products
+                offers
             }
         };
 
