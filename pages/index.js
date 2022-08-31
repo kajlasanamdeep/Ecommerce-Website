@@ -1,10 +1,12 @@
-import React from 'react';
-import styles from '../styles/Home.module.css'
-const Home = () => {
+import Home from "../components/Home/Home"
+
+
+const index = () => {
   return (
     <div>
-      HELLO
+        <Home />
     </div>
   )
-};
-export default Home;
+}
+
+export default index
