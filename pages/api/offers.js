@@ -1,5 +1,4 @@
 import connect from '../../middlewares/connect';
-import authorize from '../../middlewares/authorize';
 import nextConnect from 'next-connect';
 import { getAll } from '../../helpers/offer';
 

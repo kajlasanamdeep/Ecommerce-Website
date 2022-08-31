@@ -4,6 +4,10 @@ const create = async function (req) {
     try {
 
         let payload = req.body;
+        if (req?.file) {
+            payload.image_url = `/images/${req.file.filename}`;
+            payload.image_path = req.file.path;
+        }
         await categoryModel.create(payload);
 
         return {

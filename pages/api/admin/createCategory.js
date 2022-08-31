@@ -15,6 +15,7 @@ const api = nextConnect({
 });
 api.use(connect);
 api.use(authorize('ADMIN'));
+api.use(upload('CATEGORY'));
 api.use(validate(categorySchema));
 api.post(controller);
 async function controller(req, res) {
@@ -26,3 +27,8 @@ async function controller(req, res) {
   }
 };
 export default api;
+export const config = {
+  api: {
+    bodyParser: false
+  }
+};

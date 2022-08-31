@@ -41,7 +41,7 @@ const getAll = async function (req) {
         let payload = req.query;
         let query = { isDeleted: false };
         if (payload?.category) {
-            query.category = payload.category;
+            query.category = mongoose.Types.ObjectId(payload.category);
         }
         if (payload?.size) {
             query.size = payload.size;
