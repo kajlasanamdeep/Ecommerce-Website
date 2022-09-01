@@ -2,6 +2,7 @@ import connect from '../../../middlewares/connect';
 import authorize from '../../../middlewares/authorize';
 import validate from '../../../middlewares/validate';
 import nextConnect from 'next-connect';
+import upload from '../../../middlewares/upload';
 import { create } from '../../../helpers/category';
 import { categorySchema } from '../../../interfaces/category';
 

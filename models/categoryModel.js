@@ -5,6 +5,12 @@ const categorySchema = new Schema({
     type: String,
     required:true
   },
+  image_url: {
+    type: String, default:""
+  },
+  image_path: {
+    type: String, default:""
+  },
   isDeleted: {
     type: Boolean,
     default: false

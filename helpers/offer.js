@@ -29,7 +29,7 @@ const create = async function (req) {
         };
 
     } catch (error) {
-        if (req.file) {
+        if (req?.file) {
             fs.unlinkSync(req.file.path);
         }
         throw error;

@@ -8,7 +8,7 @@ const create = async function (req) {
         let payload = req.body;
         let category = await categoryModel.findById(mongoose.Types.ObjectId(payload.category));
         if(!category || category.isDeleted){
-            if (req.file) {
+            if (req?.file) {
                 fs.unlinkSync(req.file.path);
             }    
             return{
@@ -28,7 +28,7 @@ const create = async function (req) {
         };
 
     } catch (error) {
-        if (req.file) {
+        if (req?.file) {
             fs.unlinkSync(req.file.path);
         }
         throw error;
